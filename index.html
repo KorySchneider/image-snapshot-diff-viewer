@@ -1,0 +1,36 @@
+<html>
+  <head>
+    <style>
+      #diff-input {
+        width: 100%;
+      }
+      #output img {
+        max-width: 100%;
+        margin-top: 2em;
+      }
+    </style>
+  </head>
+
+  <body>
+    Paste logs here:
+    <textarea id='diff-input' rows='5'></textarea>
+    <div id='output' />
+  </body>
+
+  <script>
+    const pattern = new RegExp(/data:image.*/gm);
+    window.onload = () => {
+      const handleInputChange = e => {
+        const value = e.target.value;
+        const matches = value.match(pattern);
+        const parent = document.getElementById('output');
+        for (const match of matches) {
+          const image = document.createElement('img');
+          image.setAttribute('src', match);
+          parent.appendChild(image);
+        }
+      };
+      document.getElementById('diff-input').addEventListener('keyup', handleInputChange);
+    };
+  </script>
+</html>
