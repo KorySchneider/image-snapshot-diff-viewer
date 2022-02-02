@@ -15,20 +15,31 @@
   <body>
     Paste logs here:
     <textarea id='diff-input' rows='5'></textarea>
-    <div id='output' />
+    <div id='output'></div>
   </body>
 
   <script>
-    const pattern = new RegExp(/data:image.*/gm);
+    // Image snapshot name and diff blob (groups 1 and 3)
+    const pattern = new RegExp(/(data:image.*\n)/gm);
+
     window.onload = () => {
       const handleInputChange = e => {
         const value = e.target.value;
-        const matches = value.match(pattern);
-        const parent = document.getElementById('output');
-        for (const match of matches) {
-          const image = document.createElement('img');
-          image.setAttribute('src', match);
-          parent.appendChild(image);
+        if (!value) return;
+
+        // Find failed stories
+        const matches = value.matchAll(pattern);
+        if (matches) {
+          // Clear any existing output
+          document.getElementById('output').innerHTML = '';
+
+          // Output titles & images
+          const parent = document.getElementById('output');
+          for (const match of matches) {
+            const image = document.createElement('img');
+            image.setAttribute('src', match[1]);
+            parent.appendChild(image);
+          }
         }
       };
       document.getElementById('diff-input').addEventListener('keyup', handleInputChange);
